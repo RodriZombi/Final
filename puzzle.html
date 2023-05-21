@@ -27,7 +27,7 @@
             <div class="container has-text-centered">
                 <p class="title">Juego Final: Rompecabezas.</p>
                 <p class="subtitle">Arrastra las piezas del rompecabezas a los bordes del lado correcto...</p>
-                <canvas id="puzzleCanvas" width="800" height="800" class="is-centered"></canvas>
+                <canvas id="puzzleCanvas" width="400" height="400" class="is-centered"></canvas>
             </div>
         </div>
     </section>
@@ -42,7 +42,7 @@
         const imagePath = 'gisirodri.jpg';
         const pieces = 9;
 
-        const pieceSize = 800 / Math.sqrt(pieces);
+        const pieceSize = 400 / Math.sqrt(pieces);
         const image = new Image();
 
         let puzzlePieces = [];
