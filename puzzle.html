@@ -1,169 +1,214 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-  <title>Juego de Rompecabezas</title>
-  <style>
-    canvas {
-      border: 1px solid #000;
-    }
-    body {
-      background: linear-gradient(105deg, #b6dae8, #d0bbec, #b1e0bd, #d8cfa9);
-      padding: 20px;
-    }
-  </style>
+    <title>Juego de Rompecabezas</title>
+    <style>
+        canvas {
+            border: 1px solid #000;
+        }
+
+        body {
+            background: linear-gradient(105deg, #b6dae8, #d0bbec, #b1e0bd, #d8cfa9);
+            padding: 20px;
+        }
+    </style>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet"
-      integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+        integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+    </style>
 </head>
+
 <body>
     <section class="hero is-fullheight">
         <div class="hero-body">
-          <div class="container has-text-centered">
-            <p class="title">Juego Final: Rompecabezas.</p>
-            <p class="subtitle">Arrastra las piezas del rompecabezas a los bordes del lado correcto...</p>
-  <canvas id="puzzleCanvas" width="800" height="800" class="container is-centered"></canvas>
-          </div>
+            <div class="container has-text-centered">
+                <p class="title">Juego Final: Rompecabezas.</p>
+                <p class="subtitle">Arrastra las piezas del rompecabezas a los bordes del lado correcto...</p>
+                <canvas id="puzzleCanvas" width="800" height="800" class="is-centered"></canvas>
+            </div>
         </div>
     </section>
 
-  <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
-    integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
-    crossorigin="anonymous"></script>
-  <script>
-    const canvas = document.getElementById('puzzleCanvas');
-    const context = canvas.getContext('2d');
-    const imagePath = 'gisirodri.jpg';
-    const pieces = 9;
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
+        crossorigin="anonymous"></script>
+    <script>
+        const canvas = document.getElementById('puzzleCanvas');
+        const context = canvas.getContext('2d');
+        const imagePath = 'gisirodri.jpg';
+        const pieces = 9;
 
-    const pieceSize = 800 / Math.sqrt(pieces);
-    const image = new Image();
+        const pieceSize = 800 / Math.sqrt(pieces);
+        const image = new Image();
 
-    let puzzlePieces = [];
+        let puzzlePieces = [];
 
-    image.onload = function () {
-      sliceImage();
-      shufflePieces();
-      drawPuzzle();
-    };
-
-    image.src = imagePath;
-
-    function sliceImage() {
-      for (let i = 0; i < pieces; i++) {
-        const row = Math.floor(i / Math.sqrt(pieces));
-        const col = i % Math.sqrt(pieces);
-
-        const piece = {
-          index: i,
-          x: col * pieceSize,
-          y: row * pieceSize,
-          correctX: col * pieceSize,
-          correctY: row * pieceSize
+        image.onload = function () {
+            sliceImage();
+            shufflePieces();
+            drawPuzzle();
         };
 
-        puzzlePieces.push(piece);
-      }
-    }
+        image.src = imagePath;
 
-    function shufflePieces() {
-      for (let i = puzzlePieces.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [puzzlePieces[i].x, puzzlePieces[j].x] = [puzzlePieces[j].x, puzzlePieces[i].x];
-        [puzzlePieces[i].y, puzzlePieces[j].y] = [puzzlePieces[j].y, puzzlePieces[i].y];
-      }
-    }
+        function sliceImage() {
+            for (let i = 0; i < pieces; i++) {
+                const row = Math.floor(i / Math.sqrt(pieces));
+                const col = i % Math.sqrt(pieces);
 
-    function drawPuzzle() {
-      context.clearRect(0, 0, canvas.width, canvas.height);
+                const piece = {
+                    index: i,
+                    x: col * pieceSize,
+                    y: row * pieceSize,
+                    correctX: col * pieceSize,
+                    correctY: row * pieceSize
+                };
 
-      for (let i = 0; i < pieces; i++) {
-        const piece = puzzlePieces[i];
-
-        context.drawImage(
-          image,
-          piece.correctX,
-          piece.correctY,
-          pieceSize,
-          pieceSize,
-          piece.x,
-          piece.y,
-          pieceSize,
-          pieceSize
-        );
-
-        context.strokeRect(piece.x, piece.y, pieceSize, pieceSize);
-      }
-    }
-
-    canvas.addEventListener('mousedown', function (event) {
-      const rect = canvas.getBoundingClientRect();
-      const mouseX = event.clientX - rect.left;
-      const mouseY = event.clientY - rect.top;
-
-      let selectedPiece = null;
-      for (let i = 0; i < pieces; i++) {
-        const piece = puzzlePieces[i];
-
-        if (
-          mouseX >= piece.x &&
-          mouseX <= piece.x + pieceSize &&
-          mouseY >= piece.y &&
-          mouseY <= piece.y + pieceSize
-        ) {
-          selectedPiece = piece;
-          break;
+                puzzlePieces.push(piece);
+            }
         }
-      }
 
-      if (selectedPiece) {
-        canvas.addEventListener('mousemove', dragPiece);
-        canvas.addEventListener('mouseup', releasePiece);
+        function shufflePieces() {
+            for (let i = puzzlePieces.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [puzzlePieces[i].x, puzzlePieces[j].x] = [puzzlePieces[j].x, puzzlePieces[i].x];
+                [puzzlePieces[i].y, puzzlePieces[j].y] = [puzzlePieces[j].y, puzzlePieces[i].y];
+            }
+        }
 
-        let offsetX = mouseX - selectedPiece.x;
-        let offsetY = mouseY - selectedPiece.y;
+        function drawPuzzle() {
+            context.clearRect(0, 0, canvas.width, canvas.height);
+
+            for (let i = 0; i < pieces; i++) {
+                const piece = puzzlePieces[i];
+
+                context.drawImage(
+                    image,
+                    piece.correctX,
+                    piece.correctY,
+                    pieceSize,
+                    pieceSize,
+                    piece.x,
+                    piece.y,
+                    pieceSize,
+                    pieceSize
+                );
+
+                context.strokeRect(piece.x, piece.y, pieceSize, pieceSize);
+            }
+        }
+
+        function getMousePos(event) {
+            const rect = canvas.getBoundingClientRect();
+
+            if (event.touches && event.touches.length === 1) {
+                return {
+                    x: event.touches[0].clientX - rect.left,
+                    y: event.touches[0].clientY - rect.top
+                };
+            } else {
+                return {
+                    x: event.clientX - rect.left,
+                    y: event.clientY - rect.top
+                };
+            }
+        }
+
+        canvas.addEventListener('mousedown', startDrag);
+        canvas.addEventListener('touchstart', startDrag);
+
+        function startDrag(event) {
+            const mousePos = getMousePos(event);
+
+            for (let i = 0; i < pieces; i++) {
+                const piece = puzzlePieces[i];
+
+                if (
+                    mousePos.x >= piece.x &&
+                    mousePos.x <= piece.x + pieceSize &&
+                    mousePos.y >= piece.y &&
+                    mousePos.y <= piece.y + pieceSize
+                ) {
+                    piece.dragging = true;
+                    piece.offsetX = mousePos.x - piece.x;
+                    piece.offsetY = mousePos.y - piece.y;
+
+                    if (event.touches) {
+                        canvas.addEventListener('touchmove', dragPiece);
+                        canvas.addEventListener('touchend', releasePiece);
+                    } else {
+                        canvas.addEventListener('mousemove', dragPiece);
+                        canvas.addEventListener('mouseup', releasePiece);
+                    }
+
+                    break;
+                }
+            }
+        }
 
         function dragPiece(event) {
-          const newMouseX = event.clientX - rect.left;
-          const newMouseY = event.clientY - rect.top;
+            const mousePos = getMousePos(event);
 
-          selectedPiece.x = newMouseX - offsetX;
-          selectedPiece.y = newMouseY - offsetY;
+            for (let i = 0; i < pieces; i++) {
+                const piece = puzzlePieces[i];
 
-          drawPuzzle();
+                if (piece.dragging) {
+                    piece.x = mousePos.x - piece.offsetX;
+                    piece.y = mousePos.y - piece.offsetY;
+
+                    drawPuzzle();
+                    break;
+                }
+            }
         }
 
-        function releasePiece() {
-          canvas.removeEventListener('mousemove', dragPiece);
-          canvas.removeEventListener('mouseup', releasePiece);
+        function releasePiece(event) {
+            for (let i = 0; i < pieces; i++) {
+                const piece = puzzlePieces[i];
 
-          selectedPiece.x = Math.floor(selectedPiece.x / pieceSize) * pieceSize;
-          selectedPiece.y = Math.floor(selectedPiece.y / pieceSize) * pieceSize;
+                if (piece.dragging) {
+                    piece.dragging = false;
 
-          drawPuzzle();
+                    piece.x = Math.floor(piece.x / pieceSize) * pieceSize;
+                    piece.y = Math.floor(piece.y / pieceSize) * pieceSize;
 
-          if (checkPuzzleCompletion()) {
-            redirectToNextPage();
-          }
+                    drawPuzzle();
+
+                    if (checkPuzzleCompletion()) {
+                        redirectToNextPage();
+                    }
+
+                    if (event.touches) {
+                        canvas.removeEventListener('touchmove', dragPiece);
+                        canvas.removeEventListener('touchend', releasePiece);
+                    } else {
+                        canvas.removeEventListener('mousemove', dragPiece);
+                        canvas.removeEventListener('mouseup', releasePiece);
+                    }
+
+                    break;
+                }
+            }
         }
-      }
-    });
 
-    function checkPuzzleCompletion() {
-      for (let i = 0; i < pieces; i++) {
-        const piece = puzzlePieces[i];
+        function checkPuzzleCompletion() {
+            for (let i = 0; i < pieces; i++) {
+                const piece = puzzlePieces[i];
 
-        if (piece.x !== piece.correctX || piece.y !== piece.correctY) {
-          return false;
+                if (piece.x !== piece.correctX || piece.y !== piece.correctY) {
+                    return false;
+                }
+            }
+
+            return true;
         }
-      }
 
-      return true;
-    }
-
-    function redirectToNextPage() {
-      window.location.href = 'final.html';
-    }
-  </script>
+        function redirectToNextPage() {
+            window.location.href = 'index.html';
+        }
+    </script>
 </body>
+
 </html>
