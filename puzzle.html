@@ -6,8 +6,18 @@
      <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
         charset="UTF-8">
     <style>
-        canvas {
+        #puzzleCanvas {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 0 auto;
             border: 1px solid #000;
+        }
+
+        @media only screen and (min-width: 600px) {
+            #puzzleCanvas {
+                max-width: 600px;
+            }
         }
 
         body {
